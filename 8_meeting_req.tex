@@ -1,0 +1,39 @@
+\section{GoTcha: Meeting the Fundamental Requirements}
+\label{sec:meeting_req}
+
+In Section~\ref{sec:design} we describe, in detail, the fundamental requirements that an interactive debugger must fulfill. To summarize, the debugger must expose to the user all forms of state changes in the application while minimizing the interference in the natural flow of execution. In this section, we discuss how GoTcha meets these fundamental requirements.  
+
+\subsection{Observing State Changes}
+% Recapping requirements for debugger
+There are three forms of state changes present in a distributed system that are relevant to an interactive debugger: state changes at a node due to local execution, transfer of state between nodes, and the reconciliation of the state received via transmission and the local state at each node. Table~\ref{tab:primitive_function} maps the GoT primitives to the type of state change that it facilitates. In what follows, we explain how GoTcha exposes all these types of state changes to the user.
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|l}
+        {\bf Type of state change} & {\bf GoT Primitives} \\
+        \hline
+        Change in local state & Commit, Checkout \\
+        \hline
+        Inter-node state transfer & Push, Respond to Fetch \\
+        \hline
+        Reconciliation of states & Fetch, Respond to Push,\\ & Commit, Checkout \\
+    \end{tabular}
+    \caption{Mapping the primitives of GoT to the types of State changes}
+    \label{tab:primitive_function}
+\end{table}
+
+{\bf Observing changes in local state}: In GoT, the "local state" is the snapshot. The snapshot is updated by write operations directly from the local application code. These kinds of state updates can be observed by traditional debuggers. However, as mentioned in Section~\ref{subsubsec:local_exec}, the amount of state changes in a distributed system can overwhelm the user, and a distributed systems debugger should reduce the number of such updates shown. GoTcha does not track the change of state over every line of code at each GoT node. Instead, it tracks the change in the snapshot over consecutive interactions (commit, and {\em checkout}) between the snapshot and the version history. All changes in between these interactions is purely local and grouped together as one update by both GoT and GoTcha.
+
+{\bf Observing the transfer of state}: The local state of a GoT node is transferred to remote nodes in two ways: a {\em push} from the local node to the remote node, or the response by a remote node to a {\em fetch} from the local node. The user can step through these primitives to observe this communication. Specifically, the user can see when such requests are made, and the delta changes that are transferred as a part of these requests.
+
+{\bf Observing reconciliation of multiple states}: When a node receives state changes transferred from a remote node, it needs to reconcile the states changes. As explained in Section~\ref{subsubsec:recon}, reconciliation is a two step process: first, receiving changes from a remote node, then introducing these changes to the state of the local node. GoTcha must expose both steps to allow the user to observe reconciliation correctly. The first step is observed in GoTcha when observing the state changes on receiving deltas either at the end of the {\em fetch}, or when responding to a {\em push}  request. The acceptance of these changes can be observed during the {\em fetch}, response to a {\em push}, {\em commit}, or {\em checkout}. Conflicts are resolved using custom merge functions that are observed by GoTcha. Changes can also be accepted, as is, without conflicts through a {\em checkout}. All ways of receiving delta changes and observing the acceptance of these changes can be observed by GoTcha allowing the user to observe reconciliation of multiple states.
+
+\subsection{Controlling the Flow of Execution}
+% Mitigating the fact that we do not preserve network flow.
+GoTcha follows the centralized debugger design explained in Section~\ref{subsec:req2}. The central component, GCN, takes control of all GoT primitives that read or modify the version history. This means that even {\em commit} and {\em checkout} primitives, which are normally local operations, are also routed through the GCN. Control over the execution of the changes to the version history is given to the user. The user can reorder and interleave requests that have to be processed and can explore possible execution variations. This would allow the user to observe if, for example, the conflict resolution functions are performing as intended. The user interface for reordering or interleaving execution steps is shown in Figure~\ref{fig:after_push_resp}, where there are additional steps that are pending at the Grouper node. The developer can reorder and interleave these pending operations using the promote and demote arrows shown on the right side next to each step.
+
+% Roll backs as a useful tool.
+Roll backs are an additional and useful tool to explore different state changes without having to restart the entire execution. Since we have the entire history of execution given to us by the version history, we support roll backs to a previous version. When a roll back in performed, the state in the version history is reverted to an older version. It is important to note that the local state and the execution of the application code is not rolled back. This means that state changes observed after roll backs are only meaningful when the application code at each node is stateless and performs the same action iteratively. However, reconciliation can be observed well using roll backs. 
+
+% Limitations of rollbacks.
+Rolling back the execution state at a node, along with the state of the dataframe, would require that we either take control of the programming language runtime in each node, which suffers the same problems of coordinating distributed control as discussed in Section~\ref{subsec:req2}, or we integrate GoTcha with a traditional single-threaded debugger at each GoT node. While the first is unfeasible, the second can be a future possibility and is discussed in the next section.

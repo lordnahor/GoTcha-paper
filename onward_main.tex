@@ -1,0 +1,199 @@
+%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
+%\documentclass[sigplan,10pt]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[sigplan,nonacm]{acmart}
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+%% For double-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For single-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission, w/ required CCS and ACM Reference
+%\documentclass[acmsmall]{acmart}\settopmatter{}
+
+
+%% Journal information
+%% Supplied to authors by publisher for camera-ready submission;
+%% use defaults for review submission.
+\startPage{1}
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission;
+%% use 'none' for review submission.
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2018}           %% If different from \acmYear
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format must update the '\documentclass' and
+%% topmatter commands above; see 'acmart-sigplanproc-template.tex'.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{listings}
+
+\newcommand{\name}{Version Graph Debugger}
+\newcommand{\com}[1]{{\color{red}{#1}}}
+\lstdefinelanguage{CollectionsP}{%
+  language     = Python,
+  morekeywords = {pclass, Q, I, P, from, join, select, on, where,
+    union, intersect, select, or, and, is, with, as, foreach,
+    subset, union, intersect, Join, Project, set, subset, projection, parameter, Getter, GetterSetter, Deleter, Setter, Producer},
+}
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000
+
+%%% The following is specific to Onward! '19-PAPERS and the paper
+%%% 'GoTcha: An Interactive Debugger for GoT-Based Distributed Systems'
+%%% by Rohan Achar, Pritha Dawn, and Cristina V. Lopes.
+%%%
+% \setcopyright{acmlicensed}
+% \acmPrice{15.00}
+% \acmDOI{10.1145/3359591.3359733}
+% \acmYear{2019}
+% \copyrightyear{2019}
+% \acmISBN{978-1-4503-6995-4/19/10}
+% \acmConference[Onward! '19]{Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software}{October 23--24, 2019}{Athens, Greece}
+% \acmBooktitle{Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software (Onward! '19), October 23--24, 2019, Athens, Greece}
+\begin{document}
+
+%% Title information
+\title[GoTcha]{GoTcha: An Interactive Debugger for GoT-Based Distributed Systems}         %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+%\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Rohan Achar}
+%\authornote{with author1 note}          %% \authornote is optional;
+                                         %% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  %\position{Position1}
+  \department{Donald Bren School of ICS}              %% \department is recommended
+  \institution{University of California, Irvine}            %% \institution is required
+  %\streetaddress{Street1 Address1}
+  \city{Irvine}
+  \state{CA}
+  \postcode{92697}
+  \country{USA}                    %% \country is recommended
+}
+\email{rachar@ics.uci.edu}          %% \email is recommended
+
+\author{Pritha Dawn}
+%\authornote{with author1 note}          %% \authornote is optional;
+                                         %% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  %\position{Position1}
+  \department{Donald Bren School of ICS}              %% \department is recommended
+  \institution{University of California, Irvine}            %% \institution is required
+  %\streetaddress{Street1 Address1}
+  \city{Irvine}
+  \state{CA}
+  \postcode{92697}
+  \country{USA}                    %% \country is recommended
+}
+\email{pdawn@ics.uci.edu}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{Cristina V. Lopes}
+%\authornote{with author2 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  %\position{Position1}
+  \department{Donald Bren School of ICS}              %% \department is recommended
+  \institution{University of California, Irvine}            %% \institution is required
+  %\streetaddress{Street1 Address1}
+  \city{Irvine}
+  \state{CA}
+  \postcode{92697}
+  \country{USA}                    %% \country is recommended
+}
+\email{lopes@ics.uci.edu}          %% \email is recommended
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\input{0_abstract.tex}
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\keywords{Debugging Distributed Systems, Interactive Debugging}%TODO mandatory; please add comma-separated list of keywords
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+\input{0_abstract.tex}
+\input{1_intro.tex}
+\input{2_related.tex}
+\input{3_design.tex}
+\input{4_ideal_model.tex}
+\input{5_spacetime.tex}
+\input{6_constraints_on_got.tex}
+\input{7_architecture.tex}
+\input{8_meeting_req.tex}
+\input{9_discussion.tex}
+\input{10_conclusion.tex}
+
+% \input{2_spacetime.tex}
+% \input{3_debugging_example.tex}
+% % \input{4_formal}
+% \input{5_implementation.tex}
+% \input{6_benchmarks.tex}
+% \input{7_related.tex}
+% \input{8_conclusions.tex}
+
+
+%% Bibliography
+\bibliography{onward_main}
+
+
+%% Appendix
+\appendix
+\end{document}

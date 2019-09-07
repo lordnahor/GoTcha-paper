@@ -1,0 +1,28 @@
+\section{Introduction}
+\label{sec:intro}
+
+Debugging faults and errors in distributed systems is hard. There are many reasons for the inherent difficulty, and these have been extensively discussed in the literature~\cite{testing1,shiviz,valadares2016}. In particular, the non determinism of concurrent computation and communication makes it hard to reliably observe error conditions and failures that expose the bugs in the code. The act of debugging, itself, may change the conditions in the system to hide real errors or expose unrealistic ones.
+
+To mitigate the effects of these difficulties, several approaches have been developed. These approaches range from writing simple but usually inadequate test cases~\cite{testing2}, to rigorous but expensive model checking~\cite{modelchecking1} and theorem proving~\cite{verdi}. More recently, techniques such as record and replay~\cite{recordreplay}, tracing~\cite{tracing}, log analysis~\cite{loganalysis}, and visualizations~\cite{shiviz} have been used to locate bugs by performing postmortem analysis on the execution of distributed systems after errors are encountered.
+
+None of these tools are interactive debuggers. Interactive debuggers in a single threaded application context are powerful tools that can be used to pause the application at a predetermined predicate (often a line of code in the form of a breakpoint) and observe the state of the variables and the system at that point. They can observe the errors as they happen, and can be quite effective in determining the cause. Controls are often provided to execute each line of code interactively and observe the change of state after each step. Many modern breakpoint debuggers provide the ability to roll back the execution to a line that was already executed. This, along with the ability to mutate the state of the system from the debugger, can be used to execute the same set of lines over again and observe the state changes without having to restart the application.
+
+% However, in distributed computing and parallel computing, interactive debuggers have not been found to be very effective. The same problems of non determinism of concurrent updates, and interference of a debugger in the execution paths surface to a lot of the advantages that interactive debuggers provide. %They can provide the developer with a way to observe the communication between nodes. The developer would be able to simulate and observe the effects of network failures and delays. In addition, messages passed between the nodes can be reordered and executed to observe the systems resilience against the non determinism of message orders.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{images/single_t.png}
+\caption{Information propagation in single-thread systems.}
+\label{fig:single_thread}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{images/distributed_t.png}
+\caption{Information propagation in distributed systems.}
+\label{fig:distributed}
+\end{figure}
+
+Traditional interactive debuggers, however, become inadequate when used in parallel or distributed systems. Techniques used in single threaded applications do not translate well to a parallel or distributed context because information creation and consumption is not sequential. To create an interactive debugger for a distributed context, information flow must be modeled differently.
+
+This paper dives into the topic of interactive debuggers for distributed systems and presents an approach to the problem based on a specific model of distributed programming recently proposed, GoT~\cite{got}. The paper is organized as follows. First, we discuss the problem and existing approaches to debugging distributed systems in Section~\ref{sec:related}. In Section~\ref{sec:design}, we analyze the requirements to design an effective interactive debugger for distributed systems. This includes both the features that the debugger should have, and how we would go about designing those features. The underlying distributed computing model plays a dominant role in determining the feasibility of interactive debugging and so, in Section~\ref{sec:ideal_model}, we determine the essential features that a distributed computing model must have in order to create an effective interactive debugger. We put our approach to the test with an implementation of a distributed debugger called GoTcha. GoTcha is build on top of the GoT distributed programming model which is discussed in Section~\ref{sec:spacetime}. The implementation of GoTcha using the example of a distributed word frequency counting application, is discussed in Section~\ref{sec:debug_arch}. We show how GoTcha meets the requirements of an interactive debugger in Section~\ref{sec:meeting_req} and discuss what might be in the future for interactive debugging in distributed computing in Section~\ref{sec:discussion}.

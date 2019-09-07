@@ -1,0 +1,10 @@
+\subsection{GoT: Enabling an Interactive Debugger}
+\label{sec:meeting_constraints}
+
+As discussed in Section~\ref{sec:ideal_model}, the distributed model needs to have the following properties to make an interactive debugger feasible: first, the nodes need to have read stability; second, the published state at each node must be separate from the local state used by the application code at that node; finally, the model must expose primitives for the transfer and reconciliation of states between nodes. We explain how GoT incorporates these properties in its design.
+
+{\bf Read Stability}: Each GoT node computes only on the objects in the snapshot. The snapshot can only be updated with external changes when the {\em checkout} or pull primitives are invoked. Since these are invoked by the application code at the node, and not automatically behind the scenes, the snapshot does not change unless it is directed to by the application code. Therefore, GoT supports read stability.
+
+{\bf Separation of published state and local state}: GoT also separates the published state (the version history) from the local state (the snapshot). All changes received via a {\em fetch} or {\em push}  request will only include changes that have been committed by the sender node. 
+
+{\bf Explicit mechanisms for communication and reconciliation}: The dataframe has an explicit mechanism for inter-node communication ({\em fetch}, {\em push} ) and conflict resolution (merge functions) that can be tracked and used by the debugger to observe both the transfer of state and the reconciliation of state updates between nodes.
